@@ -1,0 +1,35 @@
+{
+  "name": "jotai-skills",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A curated set of Jotai best practices, techniques, and skills",
+  "packageManager": "pnpm@9.0.0",
+  "scripts": {
+    "validate": "tsx scripts/validate.ts",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "jotai",
+    "state-management",
+    "react",
+    "skills",
+    "best-practices"
+  ],
+  "author": "Jotai Universe",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@typescript-eslint/eslint-plugin": "^6.19.0",
+    "@typescript-eslint/parser": "^6.19.0",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "js-yaml": "^4.1.0",
+    "prettier": "^3.2.4",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3"
+  }
+}
