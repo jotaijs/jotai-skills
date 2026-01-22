@@ -68,6 +68,5 @@ const updateUserAtom = atom(null, async (get, set, update) => {
 
 ## Related Skills
 
-- [Atom Families](./atom-families.md) - For creating dynamic async atoms
-- [Suspense Integration](./suspense-integration.md) - Deep dive into Suspense usage
-- [Error Handling](./error-handling.md) - Comprehensive error handling patterns
+- Atom Families - For creating dynamic async atoms
+- Suspense Integration - Deep dive into Suspense usage

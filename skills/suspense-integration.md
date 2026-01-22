@@ -117,5 +117,3 @@ function Component() {
 ## Related Skills
 
 - [Async Atoms](./async-atoms.md) - Create async atoms that work with Suspense
-- [Error Handling](./error-handling.md) - Handle errors in async operations
-- [Loadable Atoms](./loadable-atoms.md) - Alternative to Suspense for loading states

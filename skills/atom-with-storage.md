@@ -81,4 +81,3 @@ const settingsAtom = atomWithStorage('settings', {}, asyncStorage)
 
 - [Async Atoms](./async-atoms.md) - Combine with async patterns
 - [Atom Families](./atom-families.md) - Persist family atoms
-- [Atom Effects](./atom-effects.md) - Add custom persistence logic

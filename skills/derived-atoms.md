@@ -83,5 +83,4 @@ const fahrenheitAtom = atom(
 ## Related Skills
 
 - [Async Atoms](./async-atoms.md) - Derive async values
-- [Atom with Default](./atom-with-default.md) - Set default values for atoms
 - [Write-Only Atoms](./write-only-atoms.md) - Actions that modify state

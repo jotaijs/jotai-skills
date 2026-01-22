@@ -97,4 +97,3 @@ const toggleTodoAtom = atom(null, (get, set, todoId: number) => {
 
 - [Async Atoms](./async-atoms.md) - Handle async operations
 - [Derived Atoms](./derived-atoms.md) - Read-only computed values
-- [Atom with Reducer](./atom-with-reducer.md) - Redux-style reducers in Jotai
