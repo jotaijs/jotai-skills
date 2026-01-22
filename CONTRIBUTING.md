@@ -9,6 +9,7 @@ Each skill is a Markdown file in the `skills/` directory with specific structure
 ### Skill File Structure
 
 1. **YAML Frontmatter** - Required metadata at the top of the file:
+
    ```yaml
    ---
    id: unique-skill-id
@@ -48,6 +49,7 @@ pnpm validate
 ```
 
 This will:
+
 - Validate YAML frontmatter schema
 - Check for required sections
 - Ensure unique IDs across all skills

@@ -9,7 +9,7 @@ interface SkillFrontmatter {
   title: string
   tags: string[]
   level: 'beginner' | 'intermediate' | 'advanced'
-  updated: string
+  updated: string | Date
   summary: string
   links?: string[]
 }
@@ -70,9 +70,13 @@ function validateFrontmatter(frontmatter: SkillFrontmatter, filename: string) {
   if (!frontmatter.updated) {
     errors.push('Missing required field: updated')
   } else {
-    // Validate date format YYYY-MM-DD
+    // Handle both Date objects and strings (js-yaml parses dates as Date objects)
+    const updatedStr =
+      frontmatter.updated instanceof Date
+        ? frontmatter.updated.toISOString().split('T')[0]
+        : String(frontmatter.updated)
     const dateRegex = /^\d{4}-\d{2}-\d{2}$/
-    if (!dateRegex.test(frontmatter.updated)) {
+    if (!dateRegex.test(updatedStr)) {
       errors.push('Invalid date format: updated must be YYYY-MM-DD')
     }
   }
@@ -155,6 +159,11 @@ function main() {
       // Add to index
       skills.push({
         ...frontmatter,
+        // Convert Date to string for JSON serialization
+        updated:
+          frontmatter.updated instanceof Date
+            ? frontmatter.updated.toISOString().split('T')[0]
+            : frontmatter.updated,
         filename: file,
       })
 

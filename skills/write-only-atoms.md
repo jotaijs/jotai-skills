@@ -33,13 +33,10 @@ const incrementAtom = atom(
 ### With Parameters
 
 ```typescript
-const addToCartAtom = atom(
-  null,
-  (get, set, product: Product) => {
-    const cart = get(cartAtom)
-    set(cartAtom, [...cart, product])
-  }
-)
+const addToCartAtom = atom(null, (get, set, product: Product) => {
+  const cart = get(cartAtom)
+  set(cartAtom, [...cart, product])
+})
 
 // Usage
 const addToCart = useSetAtom(addToCartAtom)
@@ -49,41 +46,35 @@ addToCart(product)
 ### Async Write-Only Atom
 
 ```typescript
-const submitFormAtom = atom(
-  null,
-  async (get, set, formData: FormData) => {
-    set(loadingAtom, true)
-    try {
-      const response = await fetch('/api/submit', {
-        method: 'POST',
-        body: JSON.stringify(formData),
-      })
-      const result = await response.json()
-      set(resultAtom, result)
-    } catch (error) {
-      set(errorAtom, error)
-    } finally {
-      set(loadingAtom, false)
-    }
+const submitFormAtom = atom(null, async (get, set, formData: FormData) => {
+  set(loadingAtom, true)
+  try {
+    const response = await fetch('/api/submit', {
+      method: 'POST',
+      body: JSON.stringify(formData),
+    })
+    const result = await response.json()
+    set(resultAtom, result)
+  } catch (error) {
+    set(errorAtom, error)
+  } finally {
+    set(loadingAtom, false)
   }
-)
+})
 ```
 
 ### Complex Update Logic
 
 ```typescript
-const toggleTodoAtom = atom(
-  null,
-  (get, set, todoId: number) => {
-    const todos = get(todosAtom)
-    set(
-      todosAtom,
-      todos.map((todo) =>
-        todo.id === todoId ? { ...todo, completed: !todo.completed } : todo
-      )
+const toggleTodoAtom = atom(null, (get, set, todoId: number) => {
+  const todos = get(todosAtom)
+  set(
+    todosAtom,
+    todos.map((todo) =>
+      todo.id === todoId ? { ...todo, completed: !todo.completed } : todo
     )
-  }
-)
+  )
+})
 ```
 
 ## Use Cases

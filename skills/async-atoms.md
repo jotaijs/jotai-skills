@@ -41,17 +41,14 @@ const userAtom = atom(async (get) => {
 ### Write Async Atoms
 
 ```typescript
-const updateUserAtom = atom(
-  null,
-  async (get, set, update) => {
-    const response = await fetch('/api/user', {
-      method: 'PUT',
-      body: JSON.stringify(update),
-    })
-    const user = await response.json()
-    set(userAtom, user)
-  }
-)
+const updateUserAtom = atom(null, async (get, set, update) => {
+  const response = await fetch('/api/user', {
+    method: 'PUT',
+    body: JSON.stringify(update),
+  })
+  const user = await response.json()
+  set(userAtom, user)
+})
 ```
 
 ## Use Cases

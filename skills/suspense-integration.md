@@ -88,11 +88,11 @@ const loadDataAtom = atom(
 
 function Component() {
   const [data, loadData] = useAtom(loadDataAtom)
-  
+
   if (!data) {
     return <button onClick={loadData}>Load Data</button>
   }
-  
+
   return <div>{data.content}</div>
 }
 ```
