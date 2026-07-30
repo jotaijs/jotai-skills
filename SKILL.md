@@ -30,6 +30,7 @@ Read only the files that match the task:
 - `references/utilities-decision-guide.md` for choosing built-in utilities such as storage, SSR hydration, resettable/default atoms, lazy atoms, callbacks, reducers, select, split, and family migration.
 - `references/extensions-decision-guide.md` for choosing extension packages such as TanStack Query, optics, Immer, effects, location, scope, cache, XState, GraphQL/RPC, and external-store bridges.
 - `references/tools-and-debugging.md` for choosing Devtools, Babel, SWC, and Rolldown support for debugging, labels, React Refresh, and bundler integration.
+- `references/recipes-decision-guide.md` for deciding when to use or adapt official recipes such as debounce, listeners, broadcast, compare, toggle, custom hooks, reducer hooks, and atom effects.
 
 ## Jotai-Like Review Heuristics
 

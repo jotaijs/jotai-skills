@@ -44,6 +44,29 @@ When designing new state from scratch, prefer native Jotai atoms unless the exte
 - Cached server state, stale times, invalidation, mutations, pagination, or shared QueryClient: prefer `jotai-tanstack-query`.
 - GraphQL/RPC project standard: choose the matching extension if the stack is already in use.
 
+## TanStack Query Setup Details
+
+When a project already uses TanStack Query hooks and `atomWithQuery`/`atomWithMutation`, make sure Jotai and React Query reference the same `QueryClient`.
+
+Use one of these approaches:
+
+- Wrap the app with both `QueryClientProvider` and Jotai `Provider`, then hydrate `queryClientAtom` with the same `queryClient` passed to `QueryClientProvider`.
+- Pass a `getQueryClient` function to the query atom if that better matches the local architecture.
+
+Without this, invalidation or cache updates through `useQueryClient()` can miss query atoms and leave stale data. In TypeScript examples, prefer passing hydration values as a `Map` when it avoids tuple inference issues.
+
+For Next.js and SSR, keep request isolation in mind: use an explicit Jotai `Provider` for the client subtree and follow TanStack Query's SSR hydration or `initialData` patterns for server data. Treat `loadable` as a core async-atom helper, not the primary tool for Query atoms that already expose loading/error/fetching states.
+
+## Location Setup Details
+
+Use `jotai-location` when URL state is part of the atom graph.
+
+- Use `atomWithLocation` for pathname/search/location-shaped synchronization. Instantiate it once per app; multiple instances can drift.
+- Use `atomWithHash` for hash-based `URLSearchParams` state. It is DOM-only and supports custom serialize/deserialize.
+- Use `replace` / `replaceState` style options when typing or filter changes should not push a new history entry for every keystroke.
+- Derive query-parameter-specific atoms from one location atom instead of scattering many independent location atoms.
+- Guard browser-only assumptions in SSR frameworks.
+
 ## Smells
 
 - Reimplementing TanStack Query cache and invalidation with many ad hoc async atoms.
