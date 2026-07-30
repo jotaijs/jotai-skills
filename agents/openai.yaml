@@ -1,0 +1,4 @@
+interface:
+  display_name: "Jotai"
+  short_description: "Write idiomatic Jotai state code"
+  default_prompt: "Use $jotai to review and refactor this Jotai state code."
