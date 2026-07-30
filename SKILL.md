@@ -15,7 +15,7 @@ Use this skill to make Jotai code feel atomic, composable, and React-friendly. P
 2. Model state as atoms. Split values when they change independently, derive computed values with read-only atoms, and move commands into write-only atoms.
 3. Use the narrowest React hook. Prefer `useAtomValue` for reads and `useSetAtom` for writes; use `useAtom` only when the component genuinely needs both.
 4. Keep atom configs stable. Define atoms at module scope when possible; if created during render, memoize them with `useMemo`, `useRef`, or `useState`.
-5. Reach for utilities only when they match the shape of the problem. Prefer plain derived atoms first; use `splitAtom`, `focusAtom`, `atomWithStorage`, `atomWithReset`, `loadable`, or related helpers when they remove real complexity.
+5. Reach for utilities only when they match the shape of the problem. Prefer plain derived atoms first; use `splitAtom`, `focusAtom`, `atomWithStorage`, `atomWithReset`, `unwrap`, or related helpers when they remove real complexity.
 6. Verify behavior from the user-facing surface when possible. Add focused atom-level tests only for logic that is hard to exercise through components.
 
 ## Reference Routing
@@ -24,7 +24,7 @@ Read only the files that match the task:
 
 - `references/atom-modeling.md` for deciding atom boundaries, derived atoms, action atoms, writable adapters, resets, storage, and family-style parameterized atoms.
 - `references/react-usage.md` for hook selection, Provider/store scope, hydration, dynamic atom creation, and component architecture.
-- `references/async-and-side-effects.md` for Suspense, async reads, async actions, abort signals, loadable states, refresh flows, and external side effects.
+- `references/async-and-side-effects.md` for Suspense, async reads, async actions, abort signals, non-Suspense states, refresh flows, and external side effects.
 - `references/performance-and-large-state.md` for render tuning, `selectAtom`, `focusAtom`, `splitAtom`, large objects, lists, and dependency graph depth.
 - `references/typescript-and-testing.md` for TypeScript inference, writable atom argument types, `ExtractAtomValue`, and testing strategy.
 - `references/utilities-decision-guide.md` for choosing built-in utilities such as storage, SSR hydration, resettable/default atoms, lazy atoms, callbacks, reducers, select, split, and family migration.
@@ -59,6 +59,6 @@ Use this skill for requests such as:
 - "Migrate `atomFamily` from `jotai/utils` to `jotai-family`."
 - "Write tests for this Jotai state behavior."
 
-## Source Basis
+## Compatibility And Source Verification
 
-This skill is distilled from the local Jotai repository at `/Users/mason.yoo/Project/jewook/jotai`, especially `README.md`, `docs/core`, `docs/guides`, `docs/utilities`, `docs/recipes`, examples, and tests. When exact API behavior matters, inspect the local source and tests rather than relying only on these summaries.
+This revision was validated against Jotai 2.20.2 at upstream commit `56a9cc5`. Before giving version-sensitive API guidance, determine the target project's installed Jotai and extension-package versions, then inspect their exported types, source, or matching documentation and tests. Do not assume a particular checkout path or that current documentation matches the installed version.

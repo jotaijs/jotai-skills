@@ -55,7 +55,7 @@ Use one of these approaches:
 
 Without this, invalidation or cache updates through `useQueryClient()` can miss query atoms and leave stale data. In TypeScript examples, prefer passing hydration values as a `Map` when it avoids tuple inference issues.
 
-For Next.js and SSR, keep request isolation in mind: use an explicit Jotai `Provider` for the client subtree and follow TanStack Query's SSR hydration or `initialData` patterns for server data. Treat `loadable` as a core async-atom helper, not the primary tool for Query atoms that already expose loading/error/fetching states.
+For Next.js and SSR, keep request isolation in mind: use an explicit Jotai `Provider` for the client subtree and follow TanStack Query's SSR hydration or `initialData` patterns for server data. Treat `unwrap` as a core async-atom helper, not the primary tool for Query atoms that already expose loading/error/fetching states.
 
 ## Location Setup Details
 

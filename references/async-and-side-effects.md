@@ -25,10 +25,12 @@ Use the `signal` argument for abortable work so stale async reads can be cancele
 An async write atom starts work when the setter/action is called. Treat it like a command.
 
 ```ts
+const savedUserAtom = atom<User | null>(null)
+
 const saveUserAtom = atom(null, async (get, set) => {
   const user = get(draftUserAtom)
   const saved = await saveUser(user)
-  set(userAtom, saved)
+  set(savedUserAtom, saved)
 })
 ```
 
@@ -49,9 +51,27 @@ The same rule applies inside async write functions if they need async atom value
 
 ## Avoiding Suspense
 
-Use `loadable` from `jotai/utils` when the UI should render explicit loading/error/value states instead of suspending.
+Use `unwrap` from `jotai/utils` when an async atom needs a synchronous pending or previous-value fallback. `unwrap` still throws rejected errors, so let an error boundary handle them or convert success and failure into an explicit result union before unwrapping.
 
-Choose Suspense when boundary-level loading is natural. Choose `loadable` when the component must stay mounted and branch on state.
+```ts
+import { unwrap } from 'jotai/utils'
+
+const userResultAtom = atom(async (get) => {
+  try {
+    return { state: 'hasData' as const, data: await get(userAtom) }
+  } catch (error) {
+    return { state: 'hasError' as const, error }
+  }
+})
+
+const userStateAtom = unwrap(userResultAtom, (previous) =>
+  previous?.state === 'hasData'
+    ? { state: 'loading' as const, previous: previous.data }
+    : { state: 'loading' as const },
+)
+```
+
+Choose Suspense when boundary-level loading is natural. Choose `unwrap` or an explicit result atom when the component must stay mounted and branch on pending, previous-data, error, and value states. Do not introduce the deprecated `loadable` utility in new or updated code.
 
 ## Refresh and Reset
 

@@ -60,13 +60,28 @@ Prefer tests that resemble how users interact with the UI. Treat Jotai as an imp
 Use `Provider` and `useHydrateAtoms` to inject initial atom values:
 
 ```tsx
-function TestProvider({ children }: { children: React.ReactNode }) {
-  useHydrateAtoms([[countAtom, 100]])
+import { createStore, Provider } from 'jotai'
+import { useHydrateAtoms } from 'jotai/utils'
+import { useState, type ReactNode } from 'react'
+
+function HydrateAtoms({ children }: { children: ReactNode }) {
+  useHydrateAtoms(new Map([[countAtom, 100]]))
   return children
+}
+
+function TestProvider({ children }: { children: ReactNode }) {
+  const [store] = useState(createStore)
+  return (
+    <Provider store={store}>
+      <HydrateAtoms>{children}</HydrateAtoms>
+    </Provider>
+  )
 }
 ```
 
-For isolated atom logic, test through hooks or the vanilla store API if the project already uses that pattern. Keep assertions focused on behavior: rendered output, action result, reset behavior, async loading/error/success state, or Provider isolation.
+Create a fresh store for every test render or test case. Call `useHydrateAtoms` from a descendant of the matching `Provider`; calling it in the same component that returns the Provider hydrates the parent or default store instead.
+
+For isolated atom logic, test through hooks or the vanilla store API if the project already uses that pattern. Unsubscribe every `store.sub` listener during cleanup. Keep assertions focused on behavior: rendered output, action result, reset behavior, async loading/error/success state, or Provider isolation.
 
 ## Review Checklist
 

@@ -16,7 +16,7 @@ Start with core atoms: primitive atoms, read-only derived atoms, read/write adap
 | Default value derived from other atoms but later overwritable | `atomWithDefault` | After overwrite, dependencies no longer drive updates until reset. This behavior should be intentional. |
 | Force refresh of derived/async data | `atomWithRefresh` or a named refresh action atom | Useful for pull-to-refresh and manual refetch flows. If the data is server state with cache needs, consider a Query extension first. |
 | Expensive or unavailable initial value | `atomWithLazy` | Initializes on first use in each store, then behaves like a primitive atom. |
-| Avoid Suspense/error boundary for async atom state | `loadable` | Use when UI needs explicit `loading`, `hasData`, or `hasError` branching. Use Suspense when boundary-level loading is natural. |
+| Avoid Suspense for async atom state | `unwrap` or an explicit result atom | Use `unwrap` for a synchronous pending/previous-value fallback. Convert rejection into a result union when the component must render errors itself; otherwise errors still reach an error boundary. |
 | Convert observable source to atom | async utilities / observable support | Use when the source already has observable semantics. Keep subscription lifetime clear. |
 | Atom read/write from an imperative callback | `useAtomCallback` | Use for event/callback integration that needs `get`/`set`. Avoid replacing normal hooks or action atoms with callback plumbing. |
 | Reducer mental model for one atom | `atomWithReducer` | Useful when a reducer already expresses the state transition well. For domain commands, write-only action atoms are often more Jotai-like and easier to code-split. |

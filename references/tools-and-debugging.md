@@ -35,5 +35,5 @@ Use toolchain plugins when development refresh behavior or debug labels matter.
 1. Check atom identity: atoms created in render must be stable.
 2. Check subscriptions: use `useAtomValue` and `useSetAtom` where possible.
 3. Check dependency graph: prefer wide graphs and avoid long derived chains.
-4. Check async behavior: Suspense boundary, `loadable`, abort signal, or Query extension as appropriate.
+4. Check async behavior: Suspense boundary, `unwrap` or an explicit result atom, abort signal, or Query extension as appropriate.
 5. Add `debugLabel`s or Devtools when visual inspection would shorten diagnosis.
