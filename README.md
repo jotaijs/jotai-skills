@@ -13,7 +13,7 @@ file with the instructions and supporting references for that skill.
 
 | Skill                       | Description                                                                             |
 | --------------------------- | --------------------------------------------------------------------------------------- |
-| [`jotai`](./jotai/SKILL.md) | Write, review, refactor, and debug idiomatic Jotai state code for React and TypeScript. |
+| [`jotai`](./skills/jotai/SKILL.md) | Write, review, refactor, and debug idiomatic Jotai state code for React and TypeScript. |
 
 ## Install
 
@@ -48,10 +48,11 @@ npx skills add jotaijs/jotai-skills --skill jotai --global
 jotai-skills/
 ├── README.md
 ├── LICENSE
-└── jotai/
-    ├── SKILL.md
-    ├── agents/
-    └── references/
+└── skills/
+    └── jotai/
+        ├── SKILL.md
+        ├── agents/
+        └── references/
 ```
 
 ## Links
