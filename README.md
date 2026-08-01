@@ -1,85 +1,57 @@
 # jotai-skills
 
-The Jotai skill for the open agent skills ecosystem.
+Jotai-related skills for the open agent skills ecosystem.
 
 [![License](https://img.shields.io/github/license/jotaijs/jotai-skills?style=flat&colorA=000000&colorB=000000)](./LICENSE)
 
-Use this skill with Codex, Claude Code, and other skills-compatible coding
-agents when you want help writing, reviewing, refactoring, or debugging
-idiomatic Jotai state code.
+This repository is a collection of skills for coding agents such as Codex and
+Claude Code. Each skill lives in its own directory and contains a `SKILL.md`
+file with the instructions and supporting references for that skill.
 
-## Install the Skill
+## Skills
+
+| Skill                       | Description                                                                             |
+| --------------------------- | --------------------------------------------------------------------------------------- |
+| [`jotai`](./jotai/SKILL.md) | Write, review, refactor, and debug idiomatic Jotai state code for React and TypeScript. |
+
+## Install
+
+List available skills:
 
 ```sh
-npx skills add jotaijs/jotai-skills
+npx skills add jotaijs/jotai-skills --list
+```
+
+Install the `jotai` skill:
+
+```sh
+npx skills add jotaijs/jotai-skills --skill jotai
 ```
 
 Install it for a specific agent:
 
 ```sh
-npx skills add jotaijs/jotai-skills --agent codex
-npx skills add jotaijs/jotai-skills --agent claude-code
+npx skills add jotaijs/jotai-skills --skill jotai --agent codex
+npx skills add jotaijs/jotai-skills --skill jotai --agent claude-code
 ```
 
-Install it globally if you want the Jotai skill available across projects:
+Install it globally:
 
 ```sh
-npx skills add jotaijs/jotai-skills --global
+npx skills add jotaijs/jotai-skills --skill jotai --global
 ```
 
-## Use Without Installing
-
-Generate a prompt for the Jotai skill, or start a supported coding agent
-interactively:
-
-```sh
-npx skills use jotaijs/jotai-skills
-npx skills use jotaijs/jotai-skills --agent codex
-npx skills use jotaijs/jotai-skills --agent claude-code
-```
-
-## Use With Your Agent
-
-After installing, ask your coding agent to use the Jotai skill:
+## Repository Layout
 
 ```text
-Use $jotai to review this atom design.
+jotai-skills/
+├── README.md
+├── LICENSE
+└── jotai/
+    ├── SKILL.md
+    ├── agents/
+    └── references/
 ```
-
-```text
-Use $jotai to refactor this React Context state into Jotai atoms.
-```
-
-```text
-Use $jotai to make this component stop rerendering on unrelated atom changes.
-```
-
-For Claude Code, use the same task language after installing the skill for
-`claude-code`:
-
-```text
-Use the Jotai skill to move this async fetch/update flow into idiomatic atoms.
-```
-
-## What's Inside
-
-This repository contains a single skill:
-
-- [SKILL.md](./SKILL.md) - the main Jotai workflow and reference router
-- [references](./references) - focused guidance for atom modeling, React usage,
-  async flows, performance, TypeScript, testing, utilities, extensions, tools,
-  debugging, and recipes
-- [agents/openai.yaml](./agents/openai.yaml) - metadata for agent UIs
-
-## What the Skill Helps With
-
-- Model state with primitive, derived, writable, and write-only atoms
-- Choose `useAtomValue`, `useSetAtom`, or `useAtom` based on subscription needs
-- Keep atom configs stable across React renders
-- Design async atoms, async actions, refresh flows, and non-Suspense states
-- Choose Jotai utilities and ecosystem extensions without overfitting
-- Review large object/list state for unnecessary rerenders
-- Type and test Jotai state behavior in TypeScript projects
 
 ## Links
 

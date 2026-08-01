@@ -61,4 +61,4 @@ Use this skill for requests such as:
 
 ## Compatibility And Source Verification
 
-This revision was validated against Jotai 2.20.2 at upstream commit `56a9cc5`. Before giving version-sensitive API guidance, determine the target project's installed Jotai and extension-package versions, then inspect their exported types, source, or matching documentation and tests. Do not assume a particular checkout path or that current documentation matches the installed version.
+This revision was written against Jotai 2.20.2. Before giving version-sensitive API guidance, determine the target project's installed Jotai and extension-package versions, then inspect their exported types, source, or matching documentation and tests. Do not assume current documentation matches the installed version.
