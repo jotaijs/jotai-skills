@@ -2,6 +2,7 @@
 
 Jotai-related skills for the open agent skills ecosystem.
 
+[![skills.sh](https://skills.sh/b/jotaijs/jotai-skills)](https://skills.sh/jotaijs/jotai-skills)
 [![License](https://img.shields.io/github/license/jotaijs/jotai-skills?style=flat&colorA=000000&colorB=000000)](./LICENSE)
 
 This repository is a collection of skills for coding agents such as Codex and
