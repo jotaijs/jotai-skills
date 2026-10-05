@@ -6,6 +6,10 @@ Use this reference for typing atoms and validating Jotai behavior.
 
 Enable `strict` or at least `strictNullChecks`; Jotai's types rely heavily on inference.
 
+Jotai v3 requires TypeScript 5.5 or newer and resolves its types through conditional `exports`; v2 supports TypeScript 3.8+. If type resolution breaks right after an upgrade, check the TypeScript version and `moduleResolution` before suspecting the atom types.
+
+Use the `Store` type exported from `jotai` when a helper or test utility needs to accept a store; it covers `get`, `set`, and `sub`. It is only exported from v3.
+
 Let primitive and derived atoms infer types when possible:
 
 ```ts
@@ -78,6 +82,8 @@ function TestProvider({ children }: { children: ReactNode }) {
   )
 }
 ```
+
+Jotai v3 publishes ESM only, which mostly surfaces in the test layer. Vitest and Jest in native ESM mode handle it. A Jest setup that transforms to CJS skips `node_modules` by default, so it may need Jotai included in the transform (for example `transformIgnorePatterns: ['/node_modules/(?!jotai)']`). If imports fail only under the test runner, check the runner's module configuration before suspecting the atoms.
 
 Create a fresh store for every test render or test case. Call `useHydrateAtoms` from a descendant of the matching `Provider`; calling it in the same component that returns the Provider hydrates the parent or default store instead.
 

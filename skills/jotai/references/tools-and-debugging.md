@@ -20,7 +20,7 @@ Use toolchain plugins when development refresh behavior or debug labels matter.
 
 | Toolchain | Consider | Notes |
 |---|---|---|
-| Babel | `jotai-babel` | The old `jotai/babel` bundle is deprecated and should be replaced with `jotai-babel`. |
+| Babel | `jotai-babel` | The old `jotai/babel` bundle is deprecated in late v2 and removed in v3. Replace `jotai/babel/plugin-react-refresh` style entries with their `jotai-babel/*` equivalents. |
 | SWC / Next.js-style SWC pipeline | `@swc-jotai/react-refresh` and related SWC plugins | Local docs mark SWC plugins experimental. Mention that issues belong to the separate plugin repo. |
 | Rolldown / compatible Vite-like setup | `jotai-rolldown` | Experimental. Useful for React Refresh and devtools support in that toolchain. |
 
@@ -36,4 +36,5 @@ Use toolchain plugins when development refresh behavior or debug labels matter.
 2. Check subscriptions: use `useAtomValue` and `useSetAtom` where possible.
 3. Check dependency graph: prefer wide graphs and avoid long derived chains.
 4. Check async behavior: Suspense boundary, `unwrap` or an explicit result atom, abort signal, or Query extension as appropriate.
-5. Add `debugLabel`s or Devtools when visual inspection would shorten diagnosis.
+5. Check the installed major version if the bug appeared after an upgrade, especially values arriving one interaction late on v3 (`references/version-migration.md`).
+6. Add `debugLabel`s or Devtools when visual inspection would shorten diagnosis.

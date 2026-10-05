@@ -71,7 +71,9 @@ const userStateAtom = unwrap(userResultAtom, (previous) =>
 )
 ```
 
-Choose Suspense when boundary-level loading is natural. Choose `unwrap` or an explicit result atom when the component must stay mounted and branch on pending, previous-data, error, and value states. Do not introduce the deprecated `loadable` utility in new or updated code.
+Choose Suspense when boundary-level loading is natural. Choose `unwrap` or an explicit result atom when the component must stay mounted and branch on pending, previous-data, error, and value states.
+
+Do not introduce `loadable` in new or updated code. It is deprecated in late v2 and removed in v3. When migrating existing `loadable` usage, keep the three-state shape as a local helper over `unwrap` rather than looking for a replacement utility; see `references/version-migration.md`. On v3, `useAtomValueRaw` is a third option when a single component just needs the unresolved promise without suspending.
 
 ## Refresh and Reset
 
@@ -82,3 +84,5 @@ Use refresh-style atoms or action atoms when a user event should re-run async re
 Keep external synchronization explicit. `atomWithStorage` is appropriate for localStorage-style persistence, but remember that external singleton values can be inconsistent across multiple Providers unless the external source has a subscription mechanism.
 
 Prefer write atoms, `onMount`, or dedicated effect utilities for side effects. Avoid hidden side effects in read atoms unless the read is explicitly modeling async data fetching.
+
+Avoid the read function's `setSelf` option. It is deprecated in late v2 and removed in v3 with no direct replacement, and it was always a sharp tool: a read that writes itself makes the update path hard to follow. Model the write as an action atom, an `onMount` subscription, or a `jotai-effect` effect, which keeps the lifecycle visible at the call site.

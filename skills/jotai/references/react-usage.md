@@ -12,6 +12,21 @@ Choose the narrowest hook for the component's job:
 
 This matters because `useAtom` subscribes to the atom value. A write-only component using `const [, setValue] = useAtom(valueAtom)` rerenders when `valueAtom` changes; `useSetAtom` avoids that subscription.
 
+### Raw Read Hooks (v3)
+
+Jotai v3 adds two lower-level read hooks. They are for advanced cases; `useAtomValue` stays the default.
+
+- `useAtomValueRaw(atom)` returns an async atom's promise as-is and never suspends. Use it when a component must stay mounted and branch on the promise itself instead of relying on a Suspense boundary.
+- `useAtomValueRawSync(atom)` has the same signature but is built on `useSyncExternalStore`. It avoids tearing and picks up values written during mount, at the cost of always rendering updates synchronously without concurrent-rendering benefits.
+
+`useAtomValue` is `useAtomValueRaw` plus React's `use()`, so suspending behavior is unchanged from v2. Both raw hooks only exist on v3, so confirm the installed version before suggesting them; a v2 project needs `unwrap` or a result atom instead.
+
+## Mount-Window Writes
+
+In v3, `useAtomValue` no longer forces an extra rerender right after mount; it rerenders only when the value actually changed. A write that lands between the initial render and the subscription, typically from a child's `useEffect`, can therefore be missed until the next change.
+
+Prefer fixing the ownership: move that initialization into the atom itself (`atomWithDefault`, `atomWithLazy`, `onMount`) or into `useHydrateAtoms`, so no component depends on effect ordering. When the write genuinely has to happen on mount, read it with `useAtomValueRawSync`.
+
 ## Stable Atom References
 
 Define atoms at module scope by default. If an atom must be created from props or local state during render, memoize the atom config:

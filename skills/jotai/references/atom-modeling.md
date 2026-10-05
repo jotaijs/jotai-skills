@@ -69,7 +69,7 @@ export const countActionAtom = atom(null, (get, set, action: 'inc' | 'dec') => {
 
 ## Parameterized Atoms
 
-`atomFamily` from `jotai/utils` is deprecated in the local docs and should be migrated to `jotai-family` for new or updated code. The API is intended to be drop-in, but imports change:
+`atomFamily` from `jotai/utils` is deprecated in late v2 and removed in v3. Use `jotai-family` for new or updated code, and treat the import as a required change for any project upgrading to v3. The API is intended to be drop-in:
 
 ```ts
 import { atomFamily } from 'jotai-family'
