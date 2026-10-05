@@ -6,6 +6,8 @@ Use this reference when a task touches server state, nested state, side effects,
 
 Keep the core atom model first. Use extensions when they match an existing domain abstraction or avoid fragile custom code. Do not add an extension only to make simple atom composition look fancier.
 
+Extensions move on their own release schedules and some reach into `jotai/vanilla/internals`, which is not a stable API. Before committing to one, check that it supports the project's Jotai major version; a package that only works against the other major is a reason to pick a different approach, not a reason to pin Jotai.
+
 ## High-Value Extensions
 
 | Need | Consider | Why |
