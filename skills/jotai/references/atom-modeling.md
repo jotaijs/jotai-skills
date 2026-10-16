@@ -5,6 +5,7 @@ Use this reference when deciding how to shape Jotai state.
 ## Principles
 
 - Treat an atom config as an immutable definition, not a value container. The value lives in a store and the atom config is identified by object reference.
+- Update object and array values by creating new references along the changed path. Mutating a value and passing the same reference back to `set` can suppress notifications because Jotai compares values with `Object.is`.
 - Model independently changing state as independent atoms. Jotai gets much of its ergonomics from small state boundaries and automatic dependency tracking.
 - Use read-only derived atoms for computed values. Keep computations close to the state graph when multiple consumers need the same result.
 - Use write-only atoms as action atoms. This is often more Jotai-like than exporting one reducer-style dispatch API for everything.
@@ -69,7 +70,7 @@ export const countActionAtom = atom(null, (get, set, action: 'inc' | 'dec') => {
 
 ## Parameterized Atoms
 
-`atomFamily` from `jotai/utils` is deprecated in late v2 and removed in v3. Use `jotai-family` for new or updated code, and treat the import as a required change for any project upgrading to v3. The API is intended to be drop-in:
+Use `atomFamily` from `jotai-family` when a parameterized atom cache fits the task:
 
 ```ts
 import { atomFamily } from 'jotai-family'

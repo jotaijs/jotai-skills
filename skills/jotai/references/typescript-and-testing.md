@@ -6,9 +6,9 @@ Use this reference for typing atoms and validating Jotai behavior.
 
 Enable `strict` or at least `strictNullChecks`; Jotai's types rely heavily on inference.
 
-Jotai v3 requires TypeScript 5.5 or newer and resolves its types through conditional `exports`; v2 supports TypeScript 3.8+. If type resolution breaks right after an upgrade, check the TypeScript version and `moduleResolution` before suspecting the atom types.
+Jotai v3 requires TypeScript 5.5 or newer and resolves its types through conditional `exports` and `typesVersions`. If type resolution breaks after an upgrade, check the TypeScript version and `moduleResolution` before suspecting the atom types; see `version-migration.md` for older-version requirements.
 
-Use the `Store` type exported from `jotai` when a helper or test utility needs to accept a store; it covers `get`, `set`, and `sub`. It is only exported from v3.
+Use the public `Store` type from `jotai/vanilla` or `jotai` when a helper needs `get`, `set`, and `sub`. Prefer vanilla entry points for React-independent logic.
 
 Let primitive and derived atoms infer types when possible:
 
@@ -59,7 +59,13 @@ function serializeUser(user: ExtractAtomValue<typeof userAtom>) {
 
 ## Testing Strategy
 
-Prefer tests that resemble how users interact with the UI. Treat Jotai as an implementation detail for component behavior unless the atom logic is complex enough to justify isolated tests.
+Use component tests for user interactions, hook subscriptions, and Provider behavior. Test atom logic directly with `createStore` when derived values, actions, async results, or store isolation are the behavior under test; no React harness is required.
+
+```ts
+const store = createStore()
+store.set(countAtom, 2)
+expect(store.get(doubledAtom)).toBe(4)
+```
 
 Use `Provider` and `useHydrateAtoms` to inject initial atom values:
 
@@ -85,9 +91,9 @@ function TestProvider({ children }: { children: ReactNode }) {
 
 Jotai v3 publishes ESM only, which mostly surfaces in the test layer. Vitest and Jest in native ESM mode handle it. A Jest setup that transforms to CJS skips `node_modules` by default, so it may need Jotai included in the transform (for example `transformIgnorePatterns: ['/node_modules/(?!jotai)']`). If imports fail only under the test runner, check the runner's module configuration before suspecting the atoms.
 
-Create a fresh store for every test render or test case. Call `useHydrateAtoms` from a descendant of the matching `Provider`; calling it in the same component that returns the Provider hydrates the parent or default store instead.
+Create a fresh store for independent test cases; retain it across rerenders that are testing the same state flow. Without an explicit `{ store }` option, call `useHydrateAtoms` from a descendant of the matching `Provider`; calling it in the component that returns the Provider targets the parent or default store instead.
 
-For isolated atom logic, test through hooks or the vanilla store API if the project already uses that pattern. Unsubscribe every `store.sub` listener during cleanup. Keep assertions focused on behavior: rendered output, action result, reset behavior, async loading/error/success state, or Provider isolation.
+Unsubscribe every `store.sub` listener during cleanup. Tests of `onMount` behavior need a real subscription, not only `store.get`. Keep assertions focused on behavior: rendered output, action result, reset behavior, async loading/error/success state, or Provider isolation.
 
 ## Review Checklist
 
@@ -95,4 +101,4 @@ For isolated atom logic, test through hooks or the vanilla store API if the proj
 - Async atoms expose `Promise` unions only where sync/async switching is intentional.
 - Write-only atoms have precise argument types.
 - Tests initialize atom state through the same Provider/store path production code uses.
-- User-facing tests cover the important state transitions before atom-internal tests are added.
+- Test at the level that exposes the relevant behavior without coupling assertions to internal building blocks.
