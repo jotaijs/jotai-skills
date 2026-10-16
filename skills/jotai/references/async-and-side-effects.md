@@ -16,9 +16,9 @@ const userAtom = atom(async (get, { signal }) => {
 })
 ```
 
-Async read atoms suspend by default. Ensure the reading subtree is inside `Suspense`. If a `Provider` is present, place at least one `Suspense` inside that Provider.
+`useAtomValue` and `useAtom` suspend when an atom returns a promise. Ensure the reading subtree is inside `Suspense`. If a `Provider` is present, place at least one `Suspense` inside that Provider. Vanilla `store.get` returns the promise; it does not unwrap it.
 
-Use the `signal` argument for abortable work so stale async reads can be canceled before the next calculation starts.
+Pass `signal` to abortable work so superseded async reads can be canceled. Do not depend on the previous signal being aborted before the next read begins; a replacement calculation can start first. The underlying operation must honor the signal for its work to stop.
 
 ## Async Writes
 
@@ -73,7 +73,7 @@ const userStateAtom = unwrap(userResultAtom, (previous) =>
 
 Choose Suspense when boundary-level loading is natural. Choose `unwrap` or an explicit result atom when the component must stay mounted and branch on pending, previous-data, error, and value states.
 
-Do not introduce `loadable` in new or updated code. It is deprecated in late v2 and removed in v3. When migrating existing `loadable` usage, keep the three-state shape as a local helper over `unwrap` rather than looking for a replacement utility; see `references/version-migration.md`. On v3, `useAtomValueRaw` is a third option when a single component just needs the unresolved promise without suspending.
+Use `useAtomValueRaw` only when the consumer intentionally manages promises. It does not convert fulfillment or rejection into UI states; use `unwrap` or a result atom for ordinary loading/data/error branching. For existing `loadable` usage, see `version-migration.md`.
 
 ## Refresh and Reset
 
@@ -85,4 +85,6 @@ Keep external synchronization explicit. `atomWithStorage` is appropriate for loc
 
 Prefer write atoms, `onMount`, or dedicated effect utilities for side effects. Avoid hidden side effects in read atoms unless the read is explicitly modeling async data fetching.
 
-Avoid the read function's `setSelf` option. It is deprecated in late v2 and removed in v3 with no direct replacement, and it was always a sharp tool: a read that writes itself makes the update path hard to follow. Model the write as an action atom, an `onMount` subscription, or a `jotai-effect` effect, which keeps the lifecycle visible at the call site.
+`onMount` runs when an atom becomes mounted through a subscription, including as a dependency of a subscribed atom. `store.get`, `useSetAtom`, and calling a setter alone do not mount it. Return cleanup for subscriptions and timers; the atom can unmount and remount, including during React Strict Mode. Its setter invokes that atom's write function. Use an action atom for event-driven work that must run without a subscriber.
+
+When replacing legacy read-function `setSelf` usage, account for this lifecycle difference; see `version-migration.md`.

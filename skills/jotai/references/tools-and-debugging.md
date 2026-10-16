@@ -36,5 +36,5 @@ Use toolchain plugins when development refresh behavior or debug labels matter.
 2. Check subscriptions: use `useAtomValue` and `useSetAtom` where possible.
 3. Check dependency graph: prefer wide graphs and avoid long derived chains.
 4. Check async behavior: Suspense boundary, `unwrap` or an explicit result atom, abort signal, or Query extension as appropriate.
-5. Check the installed major version if the bug appeared after an upgrade, especially values arriving one interaction late on v3 (`references/version-migration.md`).
+5. Check store identity and scope, subscription cleanup, and the exact installed versions when diagnosing an upgrade regression (`version-migration.md`).
 6. Add `debugLabel`s or Devtools when visual inspection would shorten diagnosis.

@@ -8,7 +8,7 @@ Before giving version-sensitive guidance, read the project's installed version f
 
 ## What v3 Changes
 
-Jotai v3 modernizes the package rather than redesigning the API. `atom`, `useAtom`, `useAtomValue`, `useSetAtom`, `Provider`, and the store API keep their signatures and behavior. Code that runs on v2 without deprecation warnings generally runs on v3 unchanged.
+Jotai v3 modernizes the package rather than redesigning the API. `atom`, `useAtom`, `useAtomValue`, `useSetAtom`, `Provider`, and the store API keep their signatures and behavior for the vast majority of use cases. Code that runs on v2 without deprecation warnings often runs on v3 unchanged, but warnings are not an exhaustive migration check.
 
 ### Raised requirements
 
@@ -35,12 +35,12 @@ globalThis.process ??= { env: { NODE_ENV: 'production' } }
 | Removed in v3 | Replacement |
 |---|---|
 | `atomFamily` from `jotai/utils` | `atomFamily` from the `jotai-family` package |
-| `loadable` from `jotai/utils` | `unwrap`, an explicit result atom, or `useAtomValueRaw` |
+| `loadable` from `jotai/utils` | `unwrap` or an explicit result atom; v3 raw hooks only when the caller manages promises |
 | `jotai/babel/*` (preset, `plugin-debug-label`, `plugin-react-refresh`) | the `jotai-babel` package |
 | `setSelf` in the read function options | `onMount` or `jotai-effect`; there is no direct equivalent |
-| `delay` option on `useAtom` / `useAtomValue` | a custom hook over `useStore` and `store.sub` |
+| `delay` option on `useAtom` / `useAtomValue` | a custom delayed-subscription hook when timing is required; otherwise ordinary async handling |
 
-All of these emitted deprecation warnings in late v2, so a v2 project with a clean console is already migration-ready.
+These APIs emitted deprecation warnings in late v2 when the relevant path executed. Accessing the read function's `setSelf` option warns even before calling it. A clean console does not prove that a project is migration-ready: warnings may be disabled in production, and unexecuted paths or build configuration can still reference removed APIs. Search source, imports, and build configuration for every removed surface in the table.
 
 ### Userland `loadable`
 
@@ -66,31 +66,19 @@ function loadable(anAtom) {
 
 ### Userland `delay`
 
-```js
-import { useEffect, useState } from 'react'
-import { useStore } from 'jotai'
+First determine whether the old option was used to delay UI updates or avoid brief Suspense fallbacks. For ordinary loading state, prefer Suspense or `unwrap`; debouncing requests is a separate concern.
 
-function useAtomValueWithDelay(anAtom, { delay }) {
-  const store = useStore()
-  const [value, setValue] = useState(() => store.get(anAtom))
-  useEffect(() => {
-    return store.sub(anAtom, () => {
-      setTimeout(() => setValue(store.get(anAtom)), delay)
-    })
-  }, [store, anAtom, delay])
-  return value
-}
-```
+If delayed subscription notifications are required, implement a project-local hook using the matching `useStore` instance and `store.sub`. Handle the initial render-to-subscription gap, refresh the snapshot when the atom or store changes, and cancel pending timers on cleanup so an old subscription cannot overwrite the current value. Decide whether notifications should be delayed individually or debounced. Reading a promise through `store.get` does not preserve `useAtomValue`'s Suspense/error handling automatically; consume it explicitly or restrict the helper to synchronous values. Test atom/store switches and disposal as well as the delay itself.
 
-## Mount-Timing Change In `useAtomValue`
+## Post-Mount Rendering And The v3.0.0 Gap
 
-This is the one behavior change that ships without a deprecation warning.
+Jotai v3 removes the unconditional rerender that v2 scheduled immediately after mount, even when the atom value had not changed.
 
-In v2, `useAtomValue` always rerendered once right after mount, even when the value had not changed. That extra render happened to catch writes that landed between the initial render and the subscription, such as a value written by a child's `useEffect`, which runs before the parent's.
+In v3.0.0, removing that extra render introduced a gap: a write that landed between the initial render and the effect subscription, such as a value written by a child's `useEffect`, could remain unobserved until the next change.
 
-In v3 the unconditional rerender is gone; the hook compares the rendered value against the store at subscription time and rerenders only on an actual change. Reach for `useAtomValueRawSync` when a component must not miss that mount-window write.
+Jotai v3.0.1 fixes the gap. `useAtomValue` subscribes first, compares the value captured during render with the current store value, and rerenders when they differ. It therefore observes mount-window writes without restoring v2's unconditional rerender.
 
-When debugging an upgrade, suspect this change if a value appears one interaction late, or if a component that previously rendered twice on mount now renders once.
+When a project on exactly v3.0.0 shows a value one interaction late, upgrade to v3.0.1 or newer. Do not switch to `useAtomValueRawSync` only to work around this fixed regression; use that hook when synchronous `useSyncExternalStore` semantics and no tearing are actual requirements.
 
 ## Internals And Ecosystem Packages
 
@@ -105,8 +93,8 @@ Any code or extension package that reads `buildingBlocks` positionally must be u
 ## Upgrade Review Order
 
 1. Confirm React, TypeScript, and Node meet the v3 minimums.
-2. Run the app on the latest v2 and clear every Jotai deprecation warning first; that removes most of the v3 work.
-3. Replace removed APIs with the table above, package by package.
+2. Run the app on the latest v2 and clear every Jotai deprecation warning first; that removes most of the v3 work but is not exhaustive.
+3. Search source, imports, and build configuration for every removed API in the table, then replace each occurrence package by package.
 4. Check that the build pipeline accepts an ESM-only, ES2020 dependency, and that nothing deep-imports package internals.
 5. Verify extension packages and any `jotai/vanilla/internals` usage.
-6. Look for mount-timing regressions in components that read atoms written during mount.
+6. If the target is exactly v3.0.0, look for mount-timing regressions in components that read atoms written during mount and upgrade to v3.0.1 or newer.

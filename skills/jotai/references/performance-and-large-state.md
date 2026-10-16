@@ -6,27 +6,29 @@ Use this reference for rerender reduction, large objects, lists, and dependency 
 
 React may call component functions multiple times during render. Keep heavy computation outside React render paths. Prefer doing expensive work in action atoms, async fetch actions, or one derived atom shared by consumers.
 
-Avoid:
+Avoid recreating a selector and its atom on each render:
 
 ```tsx
-const selector = (state: User[]) => state.filter(expensivePredicate)
-
 function Profile() {
-  const users = useAtomValue(selectAtom(usersAtom, selector))
+  const users = useAtomValue(
+    selectAtom(usersAtom, (users) => users.filter(expensivePredicate)),
+  )
   return <UserList users={users} />
 }
 ```
 
-Prefer computing once when data is fetched or updated if the result is state:
+If the result depends on current source data or filter criteria, keep it derived with a stable atom config:
 
 ```ts
-const filteredUsersAtom = atom<User[]>([])
-
-const fetchUsersAtom = atom(null, async (_get, set) => {
-  const users = await fetchUsers()
-  set(filteredUsersAtom, users.filter(expensivePredicate))
+const filteredUsersAtom = atom((get) => {
+  const filter = get(filterAtom)
+  return get(usersAtom).filter((user) => matchesFilter(user, filter))
 })
 ```
+
+Compute during fetch/write instead only when the transformed result is the intended stored state or every relevant update maintains it. Moving computation into an action must not silently remove dependencies or leave a second copy of state stale.
+
+With stable base atom, selector, and equality function, `selectAtom` memoizes its returned atom. Calling it during render is not itself an identity problem when those inputs are stable.
 
 ## Split By Independent Updates
 
